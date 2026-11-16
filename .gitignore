@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Large rendered gameplay videos (>100 MB; published via GitHub Releases)
+*.mp4
+*.webm
+*.wav
+
+# Temporary & OS files
+*.tmp*
+*.log
+.DS_Store
+
+# Generated verification & recording frame directories
+scripts/shots/
+scripts/shots_3d/
+scripts/shots_audit/
+scripts/shots_epic_video/

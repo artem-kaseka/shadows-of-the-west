@@ -1,0 +1,3422 @@
+/* ============================================================================
+   SHADOWS OF THE WEST: SIEGE OF MIDDLE-EARTH — AAA DARK-FANTASY STRATEGY UI
+   Sculpted Cast Tarnished Bronze, Hammered Dark Iron & Chiseled Basalt Stone.
+   100% self-contained offline CSS (zero external URLs, zero external fonts).
+   ============================================================================ */
+
+:root {
+  /* Populated at startup by SurfaceTextures.inject() in ui.js with procedural data-URIs */
+  --tex-stone: none;
+  --tex-bronze: none;
+  --tex-leather: none;
+
+  /* Chiseled Dark Slate & Obsidian Stone */
+  --stone-950: #07090c;
+  --stone-900: #101318;
+  --stone-850: #171b22;
+  --stone-800: #212630;
+  --stone-750: #2b313d;
+  --stone-700: #38404f;
+  --stone-500: #6d778a;
+
+  /* Cast Tarnished Bronze & Burnished Gondorian Gold */
+  --iron-950: #110d07;
+  --bronze-900: #2e1f0a;
+  --bronze-800: #4c3512;
+  --bronze-700: #6f4f1d;
+  --bronze-600: #936d2b;
+  --bronze-500: #b58b3c;
+  --gold-500: #cfa64e;
+  --gold-400: #ebd07a;
+  --gold-300: #fff1be;
+  --gold-200: #fff9df;
+
+  /* Lothlorien Emerald-Jade Active Tab Stone */
+  --jade-950: #0b1f1d;
+  --jade-900: #113330;
+  --jade-700: #1d5750;
+  --jade-500: #2f8378;
+  --jade-300: #87f0de;
+
+  /* Garrison Forest, Istari Starlight & Mordor Flame */
+  --forest-900: #162b1f;
+  --forest-700: #274c36;
+  --forest-500: #52ab75;
+
+  --rune-500: #4fc3f7;
+  --rune-300: #99e6ff;
+
+  --mordor-600: #d84315;
+  --mordor-400: #ffa028;
+  --mordor-red: #ff3311;
+  --crimson-700: #5c1917;
+  --crimson-500: #d93b3b;
+
+  /* Engraved Parchment & Silver-Ivory Typography */
+  --text-main: #f3ead6;
+  --text-bright: #fff8e6;
+  --text-muted: #bdc3cf;
+  --text-dim: #858e9e;
+
+  --font-serif: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', 'URW Palladio L', Georgia, serif;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #06080b;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #06080b;
+}
+
+#game-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #06080b;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#game-canvas,
+#webgl-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+#hud-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 8;
+}
+
+#ui-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+  font-family: var(--font-sans);
+  color: var(--text-main);
+}
+
+/* Subtle cinematic edge framing so cast-bronze plaques pop crisply over sunlit skies */
+#ui-layer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 48%, transparent 68%, rgba(4, 5, 8, 0.40) 100%),
+    linear-gradient(180deg, rgba(5, 6, 9, 0.34) 0%, transparent 8%, transparent 86%, rgba(5, 6, 9, 0.48) 100%);
+  z-index: 0;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.ui-interactive {
+  pointer-events: auto;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Sculpted Bronze Scrollbars */
+.td-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.td-scroll::-webkit-scrollbar-track {
+  background: rgba(9, 11, 15, 0.78);
+  border-left: 1px solid rgba(181, 139, 60, 0.22);
+}
+.td-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b58b3c 0%, #6f4f1d 100%);
+  border-radius: 3px;
+  border: 1px solid rgba(255, 241, 190, 0.35);
+}
+.td-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ebd07a 0%, #936d2b 100%);
+}
+
+/* ============================================================================
+   SHARED CAST-BRONZE & CHISELED-STONE BUTTONS, ORNAMENTS & BADGES
+   ============================================================================ */
+
+.td-btn {
+  pointer-events: auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  border: 1.5px solid var(--bronze-500);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(255, 241, 195, 0.10) 0%, transparent 46%),
+    linear-gradient(180deg, #2e3440 0%, #191d25 54%, #11141a 100%);
+  background-size: 96px 96px, 100% 100%, 100% 100%;
+  color: var(--text-main);
+  padding: 8px 16px;
+  font-size: 12.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.92);
+  box-shadow:
+    0 0 0 1px var(--iron-950),
+    inset 0 1px 0 rgba(255, 245, 210, 0.24),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.72),
+    0 5px 14px rgba(0, 0, 0, 0.65);
+}
+
+.td-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.td-btn:hover:not(:disabled):not(.is-disabled) {
+  border-color: var(--gold-300);
+  filter: brightness(1.1);
+  box-shadow:
+    0 0 0 1px var(--iron-950),
+    inset 0 1px 0 rgba(255, 248, 215, 0.45),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.7),
+    0 6px 16px rgba(0, 0, 0, 0.75),
+    0 0 14px rgba(207, 166, 78, 0.34);
+}
+
+.td-btn:active:not(:disabled):not(.is-disabled) {
+  transform: translateY(1px);
+}
+
+.td-btn:disabled,
+.td-btn.is-disabled {
+  opacity: 0.46;
+  cursor: not-allowed;
+  filter: grayscale(0.55);
+}
+
+.td-btn-gold {
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #fff2be 0%, #e5be64 24%, #bf9035 62%, #7d5918 90%, #5c3f0e 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid #fff3c4;
+  color: #191104;
+  text-shadow: 0 1px 0 rgba(255, 248, 215, 0.62);
+  box-shadow:
+    0 0 0 2px #1a1206,
+    0 0 0 3px rgba(181, 139, 60, 0.58),
+    inset 0 1.5px 0 rgba(255, 253, 240, 0.88),
+    inset 0 -2px 3px rgba(68, 44, 8, 0.78),
+    0 8px 22px rgba(0, 0, 0, 0.75),
+    0 0 20px rgba(235, 208, 122, 0.34);
+}
+
+.td-btn-gold:hover:not(:disabled) {
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #fff8d9 0%, #f1cc74 26%, #ce9e3f 64%, #8d661e 90%, #694912 100%);
+  box-shadow:
+    0 0 0 2px #1a1206,
+    0 0 0 3px rgba(235, 208, 122, 0.82),
+    inset 0 1.5px 0 #ffffff,
+    inset 0 -2px 3px rgba(68, 44, 8, 0.75),
+    0 10px 26px rgba(0, 0, 0, 0.82),
+    0 0 28px rgba(255, 226, 138, 0.58);
+}
+
+.td-btn-rune {
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #243f52 0%, #142634 56%, #0d1822 100%);
+  background-size: 96px 96px, 100% 100%;
+  border-color: rgba(135, 224, 255, 0.72);
+  color: var(--rune-300);
+}
+
+.td-btn-rune:hover:not(:disabled) {
+  border-color: #c8f3ff;
+  box-shadow:
+    0 0 0 1px #08121a,
+    inset 0 1px 0 rgba(195, 245, 255, 0.45),
+    0 0 18px rgba(79, 195, 247, 0.45);
+}
+
+.td-btn-forest {
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #2d5e45 0%, #193828 58%, #10241a 100%);
+  background-size: 96px 96px, 100% 100%;
+  border-color: #74ca96;
+  color: #ebfff2;
+}
+
+.td-btn-crimson {
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #742622 0%, #481513 58%, #2d0c0b 100%);
+  background-size: 96px 96px, 100% 100%;
+  border-color: #da6b52;
+  color: #ffe2d8;
+}
+
+.td-btn-crimson:hover:not(:disabled) {
+  border-color: #ffa088;
+  box-shadow:
+    0 0 0 1px #1a0706,
+    inset 0 1px 0 rgba(255, 205, 190, 0.4),
+    0 0 16px rgba(255, 68, 24, 0.45);
+}
+
+.td-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: linear-gradient(180deg, rgba(24, 28, 36, 0.92) 0%, rgba(11, 13, 18, 0.95) 100%);
+  border: 1px solid rgba(207, 166, 78, 0.44);
+  color: var(--gold-400);
+  box-shadow: inset 0 1px 0 rgba(255, 242, 198, 0.12);
+}
+
+.td-badge-phys {
+  border-color: rgba(196, 206, 222, 0.45);
+  color: #e4ebf5;
+}
+
+.td-badge-magic {
+  border-color: rgba(95, 206, 255, 0.62);
+  color: var(--rune-300);
+  background: linear-gradient(180deg, rgba(20, 46, 66, 0.88) 0%, rgba(10, 24, 36, 0.94) 100%);
+}
+
+.td-badge-fire {
+  border-color: rgba(255, 158, 34, 0.68);
+  color: #ffca78;
+  background: linear-gradient(180deg, rgba(72, 28, 8, 0.88) 0%, rgba(36, 13, 4, 0.94) 100%);
+}
+
+.td-badge-air {
+  border-color: rgba(145, 228, 255, 0.52);
+  color: #c4f2ff;
+}
+
+/* Cast-Bronze Corner Brackets for Sculpted Frames */
+.bronze-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 5;
+  color: var(--gold-400);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.92));
+}
+.bronze-corner svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bronze-corner-tl { top: -2px; left: -2px; }
+.bronze-corner-tr { top: -2px; right: -2px; transform: scaleX(-1); }
+.bronze-corner-bl { bottom: -2px; left: -2px; transform: scaleY(-1); }
+.bronze-corner-br { bottom: -2px; right: -2px; transform: scale(-1, -1); }
+
+/* ============================================================================
+   1. CINEMATIC TITLE SCREEN OVER LUMINOUS LIVE 3D STRONGHOLD VISTA
+   ============================================================================ */
+
+#title-screen {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(12px, 2vh, 24px) clamp(20px, 3.8vw, 54px) clamp(14px, 2.4vh, 26px);
+  /* Open luminous center window so the live 3D castle, pines & sky vista shines through! */
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(8, 10, 14, 0.08) 0%, rgba(7, 9, 13, 0.42) 56%, rgba(5, 7, 10, 0.78) 100%),
+    linear-gradient(180deg, rgba(6, 8, 12, 0.44) 0%, rgba(6, 8, 12, 0.08) 26%, rgba(6, 8, 12, 0.46) 68%, rgba(5, 7, 10, 0.84) 100%);
+  z-index: 40;
+  overflow-y: auto;
+}
+
+.title-inner {
+  width: min(1160px, 100%);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(9px, 1.5vh, 15px);
+}
+
+.title-banner {
+  text-align: center;
+  position: relative;
+  padding: 4px 18px 6px;
+}
+
+.title-crest-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 2px;
+}
+
+.title-rule {
+  width: 175px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(181, 139, 60, 0.35) 22%, var(--gold-400) 50%, rgba(181, 139, 60, 0.35) 78%, transparent 100%);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95));
+}
+
+.title-kicker {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.98), 0 0 14px rgba(0, 0, 0, 0.9);
+}
+
+.title-main {
+  margin: 2px 0 0;
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 3.8vw, 48px);
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #fffdf0 0%, #fce394 30%, #d4a441 66%, #886018 92%, #5e3f0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter:
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.96))
+    drop-shadow(0 7px 18px rgba(0, 0, 0, 0.94))
+    drop-shadow(0 0 26px rgba(226, 188, 94, 0.32));
+  line-height: 1.05;
+}
+
+.title-sub {
+  margin: 4px 0 0;
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #efe6cf;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98);
+}
+
+.title-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+  margin: 0 0 7px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.96);
+}
+
+.title-section-label::before,
+.title-section-label::after {
+  content: '';
+  width: 96px;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+}
+
+/* 3 Sculpted Cast-Bronze Stronghold Map Cards */
+.map-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.map-card {
+  position: relative;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(33, 38, 47, 0.90) 0%, rgba(18, 21, 27, 0.95) 56%, rgba(11, 13, 18, 0.97) 100%);
+  background-size: 96px 96px, 100% 100%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 2px solid var(--bronze-500);
+  border-radius: 7px;
+  padding: 10px 11px 11px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  transition: transform 0.16s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  box-shadow:
+    0 0 0 2px #140e06,
+    0 0 0 3px rgba(147, 109, 43, 0.52),
+    inset 0 1.5px 0 rgba(255, 243, 198, 0.25),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.82),
+    0 14px 34px rgba(0, 0, 0, 0.82);
+}
+
+.map-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold-400);
+  box-shadow:
+    0 0 0 2px #140e06,
+    0 0 0 3.5px rgba(215, 176, 86, 0.72),
+    inset 0 1.5px 0 rgba(255, 246, 210, 0.38),
+    0 16px 38px rgba(0, 0, 0, 0.88),
+    0 0 22px rgba(207, 166, 78, 0.30);
+}
+
+.map-card.is-selected {
+  border-color: var(--gold-300);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 56, 52, 0.92) 0%, rgba(15, 28, 29, 0.96) 58%, rgba(10, 17, 19, 0.98) 100%);
+  box-shadow:
+    0 0 0 2px #140e06,
+    0 0 0 4px var(--gold-500),
+    inset 0 0 0 1px rgba(255, 241, 190, 0.45),
+    inset 0 0 18px rgba(47, 131, 120, 0.25),
+    0 16px 40px rgba(0, 0, 0, 0.9),
+    0 0 28px rgba(235, 208, 122, 0.40);
+}
+
+.map-preview-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 440 / 248;
+  max-height: 146px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 2px solid #9e7830;
+  background: #0b0f15;
+  box-shadow:
+    0 0 0 1px #120d05,
+    inset 0 0 16px rgba(0, 0, 0, 0.82);
+}
+
+.map-card.is-selected .map-preview-wrap {
+  border-color: var(--gold-400);
+}
+
+.map-preview-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 190, 0.32),
+    inset 0 -18px 24px rgba(5, 7, 11, 0.52),
+    inset 0 0 14px rgba(0, 0, 0, 0.55);
+}
+
+.map-preview-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.map-selected-pill {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 3;
+  padding: 2.5px 9px;
+  border-radius: 3px;
+  font-family: var(--font-serif);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #fff3c0 0%, #dfb555 48%, #9b7020 100%);
+  border: 1px solid #fff8dc;
+  color: #171004;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.85);
+}
+
+.map-card.is-selected .map-selected-pill {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.map-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.map-card-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--gold-300);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95);
+}
+
+.map-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.weather-rain {
+  border-color: rgba(95, 206, 255, 0.58);
+  color: var(--rune-300);
+}
+
+.weather-ash {
+  border-color: rgba(215, 178, 94, 0.56);
+  color: #ece0c4;
+}
+
+.weather-embers {
+  border-color: rgba(255, 152, 24, 0.72);
+  color: var(--mordor-400);
+}
+
+.map-card-desc {
+  margin: 0;
+  font-size: 11.4px;
+  line-height: 1.35;
+  color: #cfd4de;
+}
+
+/* 3 Engraved Heraldic Difficulty Shields / Plaques */
+.diff-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.diff-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(31, 36, 44, 0.90) 0%, rgba(15, 18, 24, 0.95) 100%);
+  background-size: 96px 96px, 100% 100%;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1.5px solid rgba(181, 139, 60, 0.62);
+  border-radius: 6px;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.14s ease;
+  box-shadow:
+    0 0 0 1.5px #130e06,
+    inset 0 1px 0 rgba(255, 242, 198, 0.2),
+    0 10px 24px rgba(0, 0, 0, 0.74);
+}
+
+.diff-card:hover {
+  border-color: var(--gold-400);
+  transform: translateY(-2px);
+}
+
+.diff-card.is-selected {
+  border-color: var(--gold-300);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(27, 56, 51, 0.92) 0%, rgba(13, 25, 25, 0.96) 100%);
+  box-shadow:
+    0 0 0 1.5px #130e06,
+    0 0 0 3px rgba(207, 166, 78, 0.65),
+    inset 0 1px 0 rgba(190, 255, 240, 0.32),
+    0 10px 26px rgba(0, 0, 0, 0.82),
+    0 0 20px rgba(207, 166, 78, 0.30);
+}
+
+.diff-shield-wrap {
+  width: 38px;
+  height: 42px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.88));
+}
+
+.diff-shield-wrap svg {
+  width: 38px;
+  height: 42px;
+  display: block;
+}
+
+.diff-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.diff-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.diff-card-name {
+  font-family: var(--font-serif);
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--gold-300);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+.diff-card-stats {
+  display: flex;
+  gap: 5px;
+  font-size: 10.8px;
+  font-weight: 700;
+  color: #ece4d0;
+  white-space: nowrap;
+}
+
+.diff-stat-gold {
+  color: var(--gold-400);
+}
+
+.diff-stat-foe {
+  color: #f8a98a;
+}
+
+.diff-card-lore {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.32;
+  color: #c8ced9;
+}
+
+/* Heroic Title Footer Actions */
+.title-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding-top: 2px;
+}
+
+#btn-begin-siege {
+  padding: 12px 50px;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  border-radius: 5px;
+}
+
+#btn-title-codex {
+  padding: 12px 24px;
+  font-size: 13px;
+}
+
+/* ============================================================================
+   2. TOP EDGE SCULPTED HUD PLAQUES (PAUSE MEDALLION, WAVE CREST, TREASURY BAR)
+   ============================================================================ */
+
+#top-hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  pointer-events: none;
+  z-index: 25;
+}
+
+/* 2A. Top-Left Heavy Cast-Bronze Pause Medallion + Attached Dark-Iron Bar */
+.hud-top-left {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+#btn-pause.pause-medallion {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2.5px solid var(--gold-400);
+  background-image:
+    var(--tex-stone),
+    radial-gradient(circle at 35% 26%, #454b57 0%, #20242c 54%, #0e1015 100%);
+  background-size: 96px 96px, 100% 100%;
+  color: var(--gold-300);
+  box-shadow:
+    0 0 0 2.5px #1a1206,
+    0 0 0 4px rgba(181, 139, 60, 0.72),
+    inset 0 2px 4px rgba(255, 246, 210, 0.34),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.88),
+    0 7px 20px rgba(0, 0, 0, 0.86);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.14s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+#btn-pause.pause-medallion::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 236, 178, 0.38);
+  pointer-events: none;
+}
+
+#btn-pause.pause-medallion:hover {
+  transform: scale(1.05);
+  border-color: var(--gold-200);
+  box-shadow:
+    0 0 0 2.5px #1a1206,
+    0 0 0 4px var(--gold-400),
+    0 0 20px rgba(235, 208, 122, 0.48),
+    0 7px 20px rgba(0, 0, 0, 0.88);
+}
+
+#btn-pause.pause-medallion.is-active {
+  background-image:
+    var(--tex-bronze),
+    radial-gradient(circle at 35% 28%, #856222 0%, #44300d 60%, #1e1505 100%);
+  border-color: var(--gold-200);
+  color: var(--gold-200);
+  box-shadow:
+    0 0 0 2.5px #1a1206,
+    0 0 0 4px var(--gold-400),
+    0 0 22px rgba(245, 216, 128, 0.65);
+}
+
+#btn-pause-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#btn-pause-icon svg {
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.95));
+}
+
+.top-left-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: -9px;
+  padding: 5px 10px 5px 15px;
+  border-radius: 0 19px 19px 0;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(38, 42, 50, 0.95) 0%, rgba(16, 18, 24, 0.98) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid var(--bronze-500);
+  border-left: none;
+  box-shadow:
+    0 0 0 1.5px #140e06,
+    inset 0 1px 0 rgba(255, 242, 198, 0.2),
+    0 6px 18px rgba(0, 0, 0, 0.8);
+}
+
+.speed-group {
+  display: inline-flex;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(181, 139, 60, 0.58);
+  background: rgba(8, 10, 14, 0.9);
+}
+
+.speed-btn {
+  pointer-events: auto;
+  height: 24px;
+  padding: 0 7.5px;
+  border: none;
+  border-right: 1px solid rgba(181, 139, 60, 0.3);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.speed-btn:last-child {
+  border-right: none;
+}
+
+.speed-btn:hover {
+  color: #fff;
+  background: rgba(207, 166, 78, 0.2);
+}
+
+.speed-btn.is-active {
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #eed078 0%, #9d7527 100%);
+  color: #161004;
+  text-shadow: 0 1px 0 rgba(255, 246, 210, 0.5);
+}
+
+.hud-ctrl-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(181, 139, 60, 0.52);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #303642 0%, #161920 100%);
+  color: #dfd8c8;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+
+.hud-ctrl-btn svg {
+  width: 13.5px;
+  height: 13.5px;
+}
+
+.hud-ctrl-btn:hover {
+  border-color: var(--gold-400);
+  color: var(--gold-300);
+  transform: translateY(-1px);
+}
+
+.hud-ctrl-btn.is-active {
+  background: linear-gradient(180deg, #64291d 0%, #37130d 100%);
+  border-color: #ff8f6b;
+  color: #ffd0c2;
+}
+
+/* 2B. Top-Center Sculpted Cast-Bronze & Chiseled-Stone Wave Plaque */
+.hud-wave-plaque {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 292px;
+  height: 50px;
+  padding: 2px 32px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.9));
+}
+
+.wave-plaque-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#hud-wave-text,
+#hud-wave-sub {
+  position: relative;
+  z-index: 1;
+}
+
+#hud-wave-text {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #f8eed6;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.98), 0 0 14px rgba(235, 208, 122, 0.28);
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+#hud-wave-sub {
+  font-family: var(--font-serif);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  opacity: 0.94;
+  line-height: 1.1;
+  margin-top: 1px;
+  text-shadow: 0 1px 3px #000;
+}
+
+/* 2C. Top-Right Sculpted Bronze-and-Stone Treasury & Citadel Plaque */
+.hud-top-right {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  height: 40px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: auto;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(39, 39, 43, 0.96) 0%, rgba(20, 21, 26, 0.98) 56%, rgba(12, 13, 17, 0.99) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2px solid var(--gold-500);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 2px #181106,
+    0 0 0 3.5px rgba(147, 109, 43, 0.62),
+    inset 0 1.5px 0 rgba(255, 244, 202, 0.34),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.86),
+    0 8px 22px rgba(0, 0, 0, 0.85);
+}
+
+.hud-top-right::before,
+.hud-top-right::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff3c0 0%, #b58b3c 65%, #4a330d 100%);
+  box-shadow: 0 1px 2px #000;
+  pointer-events: none;
+}
+.hud-top-right::before { left: 5px; }
+.hud-top-right::after { right: 5px; }
+
+.res-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.98);
+}
+
+.res-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+}
+
+.res-divider {
+  width: 1.5px;
+  height: 20px;
+  background: linear-gradient(180deg, transparent, rgba(207, 166, 78, 0.62), transparent);
+  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.85);
+}
+
+#hud-gold-val {
+  color: #fae08c;
+}
+
+#hud-corruption-pill {
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 5px;
+  transition: background 0.15s ease;
+}
+
+#hud-corruption-pill:hover {
+  background: rgba(255, 168, 24, 0.14);
+}
+
+#hud-corruption-pill.is-ring-on {
+  color: #ffd06b;
+  text-shadow: 0 0 10px rgba(255, 143, 0, 0.68);
+}
+
+#hud-corruption-pill.is-critical {
+  color: #ff756b;
+  animation: pulseCrimsonText 0.85s infinite ease-in-out;
+}
+
+.corr-mini-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 36px;
+}
+
+#corruption-pct-top {
+  font-size: 12.5px;
+  line-height: 1;
+  color: #79eab8;
+}
+
+#hud-corruption-pill.is-ring-on #corruption-pct-top {
+  color: #ffd470;
+}
+
+#hud-corruption-pill.is-critical #corruption-pct-top {
+  color: #ff6e6e;
+}
+
+.corr-mini-bar {
+  width: 38px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(6, 8, 11, 0.92);
+  border: 1px solid rgba(207, 166, 78, 0.4);
+  overflow: hidden;
+}
+
+#corruption-fill-top {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3ad29f 0%, #ffb300 60%, #ff3d00 100%);
+  transition: width 0.1s linear;
+}
+
+#hud-lives-pill {
+  color: #f0625d;
+}
+
+#hud-lives-val {
+  color: #ff746e;
+}
+
+.hud-lives-max {
+  font-size: 12.5px;
+  color: #d6605c;
+  opacity: 0.94;
+}
+
+#hud-lives-pill.is-low #hud-lives-val {
+  color: #ffb74d;
+}
+
+#hud-lives-pill.is-critical {
+  animation: pulseCrimsonText 0.95s infinite ease-in-out;
+}
+
+/* Boss Health Plaque (Docks cleanly beneath Wave Plaque!) */
+#boss-banner {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(456px, calc(100vw - 360px));
+  padding: 7px 15px 9px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(46, 16, 16, 0.95) 0%, rgba(20, 9, 11, 0.98) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2px solid #df6638;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 2px #1c0906,
+    inset 0 1px 0 rgba(255, 210, 160, 0.25),
+    0 10px 26px rgba(0, 0, 0, 0.88),
+    0 0 22px rgba(230, 81, 0, 0.38);
+  pointer-events: none;
+  z-index: 24;
+}
+
+.boss-banner-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.boss-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#boss-name {
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  color: #ffe2ae;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px #000;
+}
+
+#boss-phase-badge {
+  padding: 1.5px 8px;
+  border-radius: 3px;
+  font-family: var(--font-serif);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255, 61, 0, 0.26);
+  border: 1px solid rgba(255, 164, 42, 0.72);
+  color: #ffca74;
+}
+
+.boss-hp-track {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  border-radius: 3px;
+  background: rgba(8, 8, 11, 0.94);
+  border: 1px solid rgba(224, 178, 88, 0.56);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.88);
+  overflow: hidden;
+}
+
+#boss-hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #8b1616 0%, #e65100 58%, #ffc658 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 245, 200, 0.45);
+  transition: width 0.12s ease-out;
+}
+
+#boss-hp-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 3px #000;
+}
+
+/* Pause Indicator & Herald Toast */
+#pause-banner {
+  position: absolute;
+  top: 62px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 13px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 32, 40, 0.96) 0%, rgba(13, 16, 21, 0.98) 100%);
+  border: 1.5px solid var(--gold-500);
+  box-shadow: 0 0 0 1.5px #140e06, 0 8px 22px rgba(0, 0, 0, 0.84);
+  pointer-events: auto;
+  z-index: 26;
+}
+
+.pause-banner-label {
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--gold-400);
+}
+
+#herald-toast {
+  position: absolute;
+  top: 116px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 28px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, transparent 0%, rgba(15, 18, 24, 0.94) 14%, rgba(15, 18, 24, 0.94) 86%, transparent 100%);
+  border-top: 1.5px solid rgba(235, 208, 122, 0.68);
+  border-bottom: 1.5px solid rgba(235, 208, 122, 0.68);
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: var(--gold-300);
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 23;
+  text-shadow: 0 2px 6px #000;
+  white-space: nowrap;
+}
+
+#herald-toast.tone-danger {
+  border-color: rgba(255, 68, 24, 0.85);
+  color: #ffad92;
+}
+
+/* ============================================================================
+   3. BOTTOM-LEFT CAST-BRONZE 3D SATELLITE MINIMAP MEDALLION
+   ============================================================================ */
+
+#minimap-medallion {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  pointer-events: auto;
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    var(--tex-bronze),
+    radial-gradient(circle at 30% 24%, #d6b15f 0%, #8f6b29 34%, #493411 72%, #201606 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2.5px solid #efd280;
+  box-shadow:
+    0 0 0 3px #150f06,
+    0 0 0 5px rgba(168, 130, 54, 0.68),
+    inset 0 2px 5px rgba(255, 248, 212, 0.55),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.88),
+    0 12px 32px rgba(0, 0, 0, 0.92);
+}
+
+.medallion-bezel-svg {
+  position: absolute;
+  inset: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.minimap-inner-well {
+  width: 138px;
+  height: 138px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background: #0b100e;
+  border: 2.5px solid #1e1507;
+  box-shadow:
+    0 0 0 1px rgba(255, 236, 178, 0.35),
+    inset 0 0 18px rgba(0, 0, 0, 0.94);
+  z-index: 1;
+}
+
+#hud-minimap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Sculpted Brass Bezel Corner Studs */
+.bezel-stud {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-image:
+    var(--tex-stone),
+    radial-gradient(circle at 35% 28%, #4d4230 0%, #1d1811 78%);
+  border: 1.5px solid var(--gold-400);
+  box-shadow:
+    0 0 0 1.5px #140e05,
+    0 3px 8px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 244, 200, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-300);
+  font-family: var(--font-serif);
+  font-size: 10px;
+  font-weight: 800;
+  z-index: 4;
+}
+
+.bezel-stud svg {
+  width: 13.5px;
+  height: 13.5px;
+}
+
+.bezel-stud-tl {
+  top: 0;
+  left: 3px;
+  cursor: pointer;
+  transition: transform 0.14s ease, border-color 0.14s ease;
+}
+
+.bezel-stud-tl.can-call-early {
+  background-image:
+    var(--tex-bronze),
+    radial-gradient(circle at 35% 30%, #f0c965 0%, #7d5814 86%);
+  color: #171004;
+  border-color: #fff6cf;
+  animation: earlyHornPulse 1.4s infinite ease-in-out;
+}
+
+.bezel-stud-tl:hover {
+  transform: scale(1.1);
+  border-color: var(--gold-200);
+}
+
+.bezel-stud-br {
+  bottom: 0;
+  right: 3px;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   4. BOTTOM-RIGHT CAST-BRONZE EMBOSSED GRIMOIRE TOME MEDALLION
+   ============================================================================ */
+
+#codex-medallion {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  pointer-events: auto;
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    var(--tex-bronze),
+    radial-gradient(circle at 30% 24%, #d6b15f 0%, #8f6b29 34%, #493411 72%, #201606 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2.5px solid #efd280;
+  box-shadow:
+    0 0 0 3px #150f06,
+    0 0 0 5px rgba(168, 130, 54, 0.68),
+    inset 0 2px 5px rgba(255, 248, 212, 0.55),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.88),
+    0 12px 32px rgba(0, 0, 0, 0.92);
+}
+
+#btn-codex.tome-medallion-btn {
+  position: relative;
+  width: 138px;
+  height: 138px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2.5px solid #1e1507;
+  background-image:
+    var(--tex-leather),
+    radial-gradient(circle at 50% 42%, #4a3921 0%, #221a12 56%, #0d0b09 100%);
+  background-size: 96px 96px, 100% 100%;
+  box-shadow:
+    0 0 0 1px rgba(255, 236, 178, 0.34),
+    inset 0 0 20px rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  z-index: 3;
+  transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.18s ease;
+}
+
+#btn-codex.tome-medallion-btn:hover {
+  transform: scale(1.035);
+  filter: brightness(1.1);
+  box-shadow:
+    0 0 0 1px var(--gold-300),
+    inset 0 0 18px rgba(245, 214, 126, 0.25),
+    0 0 22px rgba(235, 208, 122, 0.46);
+}
+
+#hud-tome-canvas {
+  width: 128px;
+  height: 128px;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tome-nameplate {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2.5px 16px 3px;
+  border-radius: 4px;
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #42331f 0%, #1d160c 100%);
+  border: 1.5px solid var(--gold-400);
+  box-shadow:
+    0 0 0 1.5px #120c04,
+    0 4px 10px rgba(0, 0, 0, 0.92),
+    inset 0 1px 0 rgba(255, 242, 195, 0.38);
+  font-family: var(--font-serif);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--gold-300);
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.bezel-stud-tr {
+  top: 0;
+  right: 3px;
+  pointer-events: none;
+}
+
+.bezel-stud-bl {
+  bottom: 3px;
+  left: 2px;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   5. BOTTOM-CENTER SCULPTED CAST-BRONZE & CHISELED-STONE COMMAND DOCK
+   ============================================================================ */
+
+#command-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 344px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 26;
+}
+
+/* Chiseled Center Tab Strip (`Build` | `Tower` | `Upgrade`) + Bronze Filigree Wings */
+.dock-tabs-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: -2px;
+  padding: 0 18px;
+  pointer-events: auto;
+  z-index: 4;
+}
+
+.dock-filigree-wing {
+  width: 58px;
+  height: 20px;
+  color: var(--gold-500);
+  flex-shrink: 0;
+  margin-bottom: 1px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.92));
+}
+
+.dock-tab-btn {
+  position: relative;
+  min-width: 88px;
+  height: 26px;
+  padding: 0 18px;
+  border-radius: 5px 5px 0 0;
+  border: 1.5px solid var(--bronze-500);
+  border-bottom: none;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #323130 0%, #1c1c1e 62%, #131417 100%);
+  background-size: 96px 96px, 100% 100%;
+  color: #c8c0ad;
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 -1px 0 1px #140f07,
+    inset 0 1px 0 rgba(255, 242, 198, 0.2),
+    0 -4px 12px rgba(0, 0, 0, 0.72);
+  white-space: nowrap;
+  text-shadow: 0 1px 3px #000;
+}
+
+.dock-tab-btn:hover {
+  color: var(--gold-300);
+  border-color: var(--gold-400);
+}
+
+/* Glowing Emerald-Jade Chiseled Stone Active Tab (Matches Reference Image!) */
+.dock-tab-btn.is-active {
+  height: 29px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #388e81 0%, #215e56 54%, #133935 100%);
+  background-size: 96px 96px, 100% 100%;
+  border-color: var(--gold-300);
+  color: #fff9e8;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.96);
+  box-shadow:
+    0 -1px 0 1.5px #140f07,
+    inset 0 1.5px 0 rgba(188, 255, 242, 0.52),
+    inset 0 -3px 6px rgba(8, 26, 24, 0.65),
+    0 -3px 16px rgba(47, 131, 120, 0.52);
+}
+
+/* Main Sculpted Stone-and-Bronze Command Dock Bed */
+.dock-frame {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 9px 13px 8px;
+  border-radius: 7px;
+  background-image:
+    var(--tex-stone),
+    radial-gradient(ellipse at 50% 0%, rgba(212, 172, 84, 0.12) 0%, transparent 64%),
+    linear-gradient(180deg, #272a32 0%, #171a20 46%, #0d0f14 100%);
+  background-size: 96px 96px, 100% 100%, 100% 100%;
+  border: 2px solid var(--gold-500);
+  box-shadow:
+    0 0 0 2.5px #140e06,
+    0 0 0 4.5px rgba(154, 115, 44, 0.66),
+    inset 0 1.5px 0 rgba(255, 243, 198, 0.34),
+    inset 0 0 0 1px rgba(12, 14, 18, 0.85),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.92),
+    0 14px 38px rgba(0, 0, 0, 0.95);
+  pointer-events: auto;
+}
+
+/* Carved Stone & Cast-Bronze Baluster Divider */
+.dock-divider {
+  position: relative;
+  width: 10px;
+  align-self: stretch;
+  margin: 1px 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dock-divider svg {
+  width: 10px;
+  height: 100%;
+  max-height: 104px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+/* Left/Main Contextual Inspector & Build Tray */
+#inspector-panel {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 103px;
+  pointer-events: auto;
+}
+
+/* 5A. Build Mode: 4 Large Square 78x78 3D Portrait Cards + Sculpted Pad Socket */
+.dock-build-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.build-list {
+  order: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* Individual 3D Tower Portrait Card + Golden Coin Cost Pill Below (Reference Proportions!) */
+.build-card {
+  position: relative;
+  width: 80px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  transition: transform 0.13s ease, filter 0.15s ease;
+}
+
+.build-icon-wrap {
+  position: relative;
+  width: 80px;
+  height: 78px;
+  border-radius: 5px;
+  background: #0d1117;
+  border: 2px solid #c59b45;
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    inset 0 1px 0 rgba(255, 245, 205, 0.38),
+    inset 0 0 10px rgba(0, 0, 0, 0.72),
+    0 5px 12px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.build-card:hover:not(.is-unaffordable) {
+  transform: translateY(-3px);
+}
+
+.build-card:hover:not(.is-unaffordable) .build-icon-wrap {
+  border-color: var(--gold-300);
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    0 0 0 2.5px rgba(255, 238, 178, 0.5),
+    0 8px 18px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(235, 208, 122, 0.48);
+}
+
+.build-card.is-idle-mode:not(:hover) .build-icon-wrap {
+  border-color: #ab8438;
+}
+
+.build-card.is-unaffordable .build-icon-wrap {
+  border-color: rgba(108, 115, 128, 0.55);
+  filter: saturate(0.35) brightness(0.68);
+}
+
+.build-card.is-unaffordable .cost-pill {
+  color: #9ba3b2;
+}
+
+.tower-icon-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.build-card-ribbon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7px 3px 2px;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 8, 12, 0.82) 64%, rgba(6, 8, 12, 0.95) 100%);
+  font-family: var(--font-serif);
+  font-size: 8.6px;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  color: #f6eed8;
+  text-align: center;
+  text-shadow: 0 1px 3px #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Chiseled Dark-Stone & Bronze Coin Cost Pill right beneath each portrait card */
+.build-cost-bar {
+  height: 21px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #22201d 0%, #121110 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1px solid rgba(197, 155, 69, 0.62);
+  box-shadow:
+    0 0 0 1px #0f0b05,
+    inset 0 1px 0 rgba(255, 240, 190, 0.16),
+    0 2px 6px rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.build-cost-bar svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9));
+}
+
+.cost-pill {
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gold-400);
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* Sculpted Recessed Stone Foundation Socket (Matches the recessed empty slot in reference dock!) */
+.build-pad-status {
+  order: 2;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.pad-socket-well {
+  position: relative;
+  width: 80px;
+  height: 78px;
+  padding: 5px 5px 4px;
+  border-radius: 5px;
+  background-image:
+    var(--tex-stone),
+    radial-gradient(circle at 50% 44%, rgba(36, 42, 52, 0.9) 0%, rgba(13, 15, 20, 0.98) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid rgba(158, 124, 54, 0.56);
+  box-shadow:
+    0 0 0 1.5px #100c05,
+    inset 0 3px 10px rgba(0, 0, 0, 0.92),
+    inset 0 -1px 0 rgba(255, 238, 185, 0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.build-pad-status.has-pad .pad-socket-well {
+  border-color: var(--jade-300);
+  background-image:
+    var(--tex-stone),
+    radial-gradient(circle at 50% 45%, rgba(32, 86, 78, 0.92) 0%, rgba(12, 29, 28, 0.98) 100%);
+  box-shadow:
+    0 0 0 1.5px #0b1917,
+    inset 0 0 14px rgba(135, 240, 222, 0.24),
+    0 0 14px rgba(47, 131, 120, 0.36);
+}
+
+.pad-status-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.pad-status-kicker {
+  font-family: var(--font-serif);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.build-pad-status.has-pad .pad-status-kicker {
+  color: var(--jade-300);
+}
+
+.pad-socket-emblem {
+  width: 30px;
+  height: 30px;
+  color: rgba(212, 174, 88, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
+}
+
+.build-pad-status.has-pad .pad-socket-emblem {
+  color: var(--jade-300);
+  filter: drop-shadow(0 0 8px rgba(135, 240, 222, 0.55));
+}
+
+.pad-socket-emblem svg {
+  width: 28px;
+  height: 28px;
+}
+
+#build-pad-title {
+  font-family: var(--font-serif);
+  font-size: 9px;
+  font-weight: 800;
+  color: #efe6d0;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#build-pad-hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  margin: 0;
+}
+
+.btn-quick-pad,
+#btn-close-build-pad.pad-socket-action {
+  width: 100%;
+  height: 21px;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(197, 155, 69, 0.58);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #2d3440 0%, #171b22 100%);
+  color: var(--gold-400);
+  font-family: var(--font-serif);
+  font-size: 8.6px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px #0f0b05, 0 2px 6px rgba(0, 0, 0, 0.75);
+}
+
+.btn-quick-pad:hover,
+#btn-close-build-pad.pad-socket-action:hover {
+  border-color: var(--gold-300);
+  color: var(--gold-200);
+}
+
+/* 5B. Built Tower Selected View (AAA Horizontal Command Strip) */
+.dock-tower-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 9px;
+}
+
+/* Column 1: Large 78x78 3D Studio Portrait + Embossed Title & Curse Alert */
+.tower-id-col {
+  width: 214px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 33, 42, 0.94) 0%, rgba(13, 16, 21, 0.98) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid rgba(197, 155, 69, 0.56);
+  box-shadow: inset 0 1px 0 rgba(255, 242, 195, 0.16), 0 4px 10px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inspector-portrait-wrap {
+  width: 78px;
+  height: 78px;
+  border-radius: 5px;
+  border: 2px solid var(--gold-500);
+  background: #0d1117;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow:
+    0 0 0 1.5px #120d05,
+    inset 0 1px 0 rgba(255, 244, 200, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.85);
+}
+
+.tower-id-col.is-cursed .inspector-portrait-wrap {
+  border-color: var(--mordor-red);
+  box-shadow: 0 0 0 1.5px #220503, 0 0 16px rgba(255, 42, 0, 0.78);
+}
+
+#inspector-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tower-id-meta {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.tower-id-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.inspector-title-group {
+  min-width: 0;
+  flex: 1;
+}
+
+.inspector-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 11.8px;
+  font-weight: 800;
+  color: var(--gold-300);
+  line-height: 1.15;
+  text-shadow: 0 1px 3px #000;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.inspector-subtitle {
+  margin: 2px 0 0;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tower-status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.tower-status-strip .td-badge {
+  font-size: 8.8px;
+  padding: 1px 5px;
+}
+
+.curse-alert-btn {
+  width: 100%;
+  padding: 3.5px 5px;
+  border-radius: 4px;
+  border: 1.5px solid #ff5722;
+  background: linear-gradient(180deg, #8e1e16 0%, #480b08 100%);
+  color: #fff0c2;
+  font-family: var(--font-serif);
+  font-size: 8.8px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  animation: pulseCrimson 0.6s infinite ease-in-out;
+}
+
+/* Column 2: Chiseled Engraved Stats + Priority/Rally + Gilded Crimson Sell */
+.tower-stats-col {
+  width: 198px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+#inspector-panel.dock-focus-stats .stats-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stat-cell {
+  padding: 4px 6px;
+  border-radius: 4px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(16, 19, 25, 0.94) 0%, rgba(9, 11, 15, 0.98) 100%);
+  border: 1px solid rgba(181, 139, 60, 0.34);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.stat-cell-extra {
+  display: none;
+}
+
+#inspector-panel.dock-focus-stats .stat-cell-extra {
+  display: flex;
+}
+
+.stat-cell-label {
+  font-family: var(--font-serif);
+  font-size: 8.6px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+
+.stat-cell-val {
+  font-size: 11px;
+  font-weight: 800;
+  color: #f6eedb;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stat-cell-val .td-badge {
+  font-size: 8.2px;
+  padding: 0 4px;
+}
+
+.stat-cell-val.is-boosted {
+  color: #ffd54f;
+}
+
+.tactical-sell-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tactical-btn {
+  flex: 1;
+  height: 29px;
+  padding: 0 7px;
+  font-size: 10px;
+  font-family: var(--font-sans);
+  text-transform: none;
+  letter-spacing: 0.01em;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+#btn-sell-tower {
+  height: 29px;
+  padding: 0 9px;
+  font-size: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Column 3: Tier-2 3D Upgrade Card / Dual 3D Branch Cards / Tier-3 Mastery Plaque */
+.tower-upg-col {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+#upgrade-t1-wrap {
+  display: flex;
+  align-items: stretch;
+}
+
+.upgrade-t2-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* Tier 2 Sculpted Upgrade Card (Large 72x72 3D Portrait + Stat Deltas + Coin Cost) */
+.upgrade-card {
+  position: relative;
+  width: 214px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(35, 42, 52, 0.95) 0%, rgba(15, 18, 24, 0.99) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2px solid var(--gold-500);
+  box-shadow:
+    0 0 0 1.5px #130e06,
+    inset 0 1px 0 rgba(255, 244, 200, 0.28),
+    0 5px 14px rgba(0, 0, 0, 0.82);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.13s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.upgrade-card:hover:not(.is-unaffordable) {
+  transform: translateY(-2px);
+  border-color: var(--gold-300);
+  box-shadow:
+    0 0 0 1.5px #130e06,
+    0 7px 18px rgba(0, 0, 0, 0.88),
+    0 0 16px rgba(235, 208, 122, 0.40);
+}
+
+.upgrade-card.is-unaffordable {
+  opacity: 0.65;
+  border-color: rgba(112, 120, 134, 0.5);
+}
+
+.upgrade-card.is-unaffordable .cost-pill {
+  color: #9ca4b2;
+}
+
+.upg-t2-canvas-wrap {
+  width: 74px;
+  height: 74px;
+  border-radius: 4px;
+  border: 1.5px solid #c59b45;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #0d1117;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.upg-t2-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.upg-t2-info {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.upgrade-card-kicker {
+  font-family: var(--font-serif);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--jade-300);
+}
+
+.upgrade-card-title {
+  font-family: var(--font-serif);
+  font-size: 11.2px;
+  font-weight: 800;
+  color: var(--gold-300);
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.upgrade-card-desc {
+  margin: 0;
+  font-size: 9.6px;
+  line-height: 1.24;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.upgrade-deltas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.delta-pill {
+  font-size: 8.8px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(32, 74, 52, 0.65);
+  border: 1px solid rgba(92, 192, 130, 0.62);
+  color: #bdf8d0;
+}
+
+/* Dual Tier-3 Specialization 3D Portrait Cards (Matches Build Portrait Cards!) */
+.upgrade-card.branch-card {
+  width: 104px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.upgrade-card.branch-card:hover:not(.is-unaffordable) {
+  box-shadow: none;
+}
+
+.branch-art-wrap {
+  position: relative;
+  width: 104px;
+  height: 78px;
+  border-radius: 5px;
+  background: #0d1117;
+  border: 2px solid #c59b45;
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    inset 0 1px 0 rgba(255, 245, 205, 0.36),
+    0 5px 12px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.upgrade-card.branch-card:hover:not(.is-unaffordable) .branch-art-wrap {
+  border-color: var(--gold-300);
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    0 0 0 2px rgba(255, 238, 178, 0.5),
+    0 8px 18px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(235, 208, 122, 0.48);
+}
+
+.branch-art-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.branch-tag-pill {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  padding: 0.5px 5px;
+  border-radius: 3px;
+  background: rgba(9, 12, 17, 0.88);
+  border: 1px solid rgba(235, 208, 122, 0.65);
+  font-family: var(--font-serif);
+  font-size: 8.2px;
+  font-weight: 800;
+  color: var(--gold-300);
+}
+
+.branch-name-ribbon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7px 4px 2px;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 8, 12, 0.86) 62%, rgba(6, 8, 12, 0.97) 100%);
+  font-family: var(--font-serif);
+  font-size: 8.8px;
+  font-weight: 800;
+  color: #f8f0dc;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tier 3 Active Mastery Skill Plaque */
+.skill-card {
+  width: 214px;
+  padding: 6px 9px;
+  border-radius: 5px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(20, 42, 56, 0.95) 0%, rgba(10, 20, 29, 0.99) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid rgba(115, 216, 255, 0.68);
+  box-shadow:
+    0 0 0 1.5px #09131c,
+    inset 0 1px 0 rgba(190, 245, 255, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.78);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.skill-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.skill-card-name {
+  font-family: var(--font-serif);
+  font-size: 11.2px;
+  font-weight: 800;
+  color: var(--rune-300);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px #000;
+}
+
+.skill-cd-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(7, 10, 15, 0.94);
+  border: 1px solid rgba(115, 216, 255, 0.3);
+  overflow: hidden;
+}
+
+#inspector-skill-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #1ea8e8 0%, #a8eeff 100%);
+  transition: width 0.1s linear;
+}
+
+#btn-trigger-skill {
+  width: 100%;
+  height: 27px;
+  padding: 0 8px;
+  font-size: 10.5px;
+}
+
+.btn-close-x {
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid rgba(207, 166, 78, 0.52);
+  background: linear-gradient(180deg, #272c36 0%, #12151b 100%);
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-close-x:hover {
+  border-color: var(--gold-300);
+  color: #fff;
+}
+
+/* Ornate Floating Hover Plaque Above Command Dock */
+#dock-card-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 318px;
+  padding: 10px 13px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 33, 42, 0.98) 0%, rgba(12, 15, 20, 0.99) 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 1.5px solid var(--gold-400);
+  box-shadow:
+    0 0 0 2px #140e06,
+    0 12px 32px rgba(0, 0, 0, 0.95),
+    0 0 18px rgba(207, 166, 78, 0.25);
+  pointer-events: none;
+  z-index: 38;
+}
+
+.dock-tt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.dock-tt-title {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gold-300);
+}
+
+.dock-tt-cost {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gold-400);
+}
+
+.dock-tt-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+.dock-tt-desc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.36;
+  color: #d4dae4;
+}
+
+.dock-tt-skill {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px dashed rgba(207, 166, 78, 0.38);
+  font-size: 10.5px;
+  line-height: 1.32;
+  color: var(--rune-300);
+}
+
+/* ============================================================================
+   6. RIGHT-SIDE SQUARE ILLUSTRATED ABILITY CARDS (EÄRENDIL, EAGLES, ONE RING)
+   ============================================================================ */
+
+#spellbook-hud {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.spell-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.spell-btn,
+#btn-ring.ring-ability-btn {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  padding: 0;
+  border-radius: 5px;
+  border: 2px solid var(--gold-500);
+  background: #0d1219;
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    inset 0 1px 0 rgba(255, 246, 208, 0.4),
+    0 5px 14px rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.14s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.spell-btn:hover:not(.is-cooling),
+#btn-ring.ring-ability-btn:hover:not(.is-locked) {
+  transform: translateY(-3px);
+  border-color: var(--gold-300);
+  box-shadow:
+    0 0 0 1.5px #140f06,
+    0 0 0 2px rgba(255, 238, 178, 0.45),
+    0 8px 18px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(235, 208, 122, 0.48);
+}
+
+.spell-btn.is-targeting {
+  border-color: var(--rune-300);
+  box-shadow:
+    0 0 0 2px rgba(153, 230, 255, 0.65),
+    0 0 24px rgba(79, 195, 247, 0.85);
+  transform: translateY(-3px);
+}
+
+.spell-btn.is-cooling {
+  border-color: #5a6270;
+  cursor: default;
+}
+
+.spell-btn.is-cooling .ability-art-canvas {
+  filter: saturate(0.28) brightness(0.46);
+}
+
+#btn-ring.ring-ability-btn.is-active {
+  border-color: #ffca58;
+  box-shadow:
+    0 0 0 2px rgba(255, 115, 0, 0.82),
+    0 0 24px rgba(255, 148, 0, 0.88);
+}
+
+#btn-ring.ring-ability-btn.is-locked {
+  opacity: 0.58;
+  border-color: #8f3a2a;
+}
+
+.ability-art-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.spell-hotkey,
+.ring-hotkey {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(9, 11, 16, 0.9);
+  border: 1px solid rgba(235, 208, 122, 0.68);
+  font-family: var(--font-serif);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--gold-300);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.ability-corner-val {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  padding: 0.5px 4.5px;
+  border-radius: 3px;
+  background: rgba(6, 8, 12, 0.84);
+  border: 1px solid rgba(207, 166, 78, 0.35);
+  font-size: 9px;
+  font-weight: 800;
+  color: #f8f0dc;
+  text-shadow: 0 1px 3px #000;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Compact Fiery Corruption Bar inside The One Ring Card */
+.ring-card-corr-wrap {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(8, 5, 4, 0.78);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.corruption-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(6, 8, 11, 0.95);
+  border: 1px solid rgba(235, 208, 122, 0.56);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#corruption-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4cd995 0%, #ff9800 56%, #ff2a00 100%);
+  transition: width 0.09s linear;
+}
+
+#corruption-box.is-critical .corruption-track {
+  border-color: var(--mordor-red);
+  animation: pulseCrimson 0.7s infinite ease-in-out;
+}
+
+.ability-caption {
+  height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 9.8px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #ede4ce;
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px #000;
+}
+
+.hud-ring-cluster.is-ring-active .ability-caption {
+  color: #ffd46b;
+}
+
+.spell-cd-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.spell-cd-ring-bg {
+  fill: rgba(7, 9, 13, 0.58);
+}
+
+.spell-cd-arc {
+  fill: none;
+  stroke: var(--rune-500);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.spell-cd-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 6px #000;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Ability Hover Plaque */
+.spell-tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: 268px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(26, 31, 40, 0.98) 0%, rgba(12, 15, 20, 0.99) 100%);
+  border: 1.5px solid var(--gold-400);
+  box-shadow: 0 0 0 2px #140e06, 0 12px 28px rgba(0, 0, 0, 0.94);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 39;
+}
+
+.spell-slot:hover .spell-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.spell-tt-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.spell-tt-title {
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--gold-300);
+}
+
+.spell-tt-cd {
+  font-size: 10px;
+  color: var(--rune-300);
+  font-weight: 700;
+}
+
+.spell-tt-desc {
+  margin: 0;
+  font-size: 10.8px;
+  line-height: 1.36;
+  color: #d0d7e2;
+}
+
+/* Targeting Instruction Banner */
+#targeting-banner {
+  position: absolute;
+  bottom: 162px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(18, 38, 52, 0.96) 0%, rgba(10, 20, 30, 0.98) 100%);
+  border: 1.5px solid var(--rune-300);
+  box-shadow: 0 0 0 1.5px #08121a, 0 8px 24px rgba(0, 0, 0, 0.86), 0 0 18px rgba(79, 195, 247, 0.4);
+  pointer-events: auto;
+  z-index: 29;
+  white-space: nowrap;
+}
+
+#targeting-banner-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #eaf8ff;
+}
+
+/* ============================================================================
+   7. 3D SCREEN-PROJECTED EARLY WAVE CALL MARKERS
+   ============================================================================ */
+
+#early-wave-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 22;
+}
+
+.early-wave-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 5px;
+  border-radius: 22px;
+  border: 1.5px solid var(--gold-300);
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, rgba(58, 43, 16, 0.95) 0%, rgba(24, 17, 6, 0.98) 100%);
+  color: var(--gold-300);
+  box-shadow:
+    0 0 0 1.5px #181004,
+    0 6px 16px rgba(0, 0, 0, 0.88),
+    0 0 16px rgba(240, 210, 122, 0.52);
+  cursor: pointer;
+  animation: earlyHornPulse 1.5s infinite ease-in-out;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.early-wave-marker:hover {
+  transform: translate(-50%, -50%) scale(1.07);
+  filter: brightness(1.15);
+}
+
+.early-horn-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffeba4 0%, #ad8025 100%);
+  color: #191104;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.early-wave-label {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   8. BESTIARY & TOWER CODEX GRIMOIRE + VICTORY & DEFEAT MODALS
+   ============================================================================ */
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(10, 13, 18, 0.74) 0%, rgba(4, 6, 9, 0.90) 100%);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  pointer-events: auto;
+  z-index: 50;
+}
+
+.codex-window {
+  position: relative;
+  width: min(1180px, 95vw);
+  height: min(712px, 91vh);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #242933 0%, #151820 55%, #0e1016 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2.5px solid var(--gold-500);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 3px #140e06,
+    0 0 0 5px rgba(154, 115, 44, 0.62),
+    0 28px 76px rgba(0, 0, 0, 0.96),
+    inset 0 1.5px 0 rgba(255, 243, 198, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.codex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 20px;
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(90deg, rgba(197, 155, 69, 0.24) 0%, rgba(26, 30, 38, 0.88) 55%, rgba(197, 155, 69, 0.16) 100%);
+  border-bottom: 1.5px solid rgba(207, 166, 78, 0.52);
+}
+
+.codex-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--gold-300);
+  text-transform: uppercase;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.95);
+}
+
+.codex-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(9, 11, 15, 0.88);
+  border-bottom: 1px solid rgba(207, 166, 78, 0.32);
+}
+
+.codex-tab-btn {
+  padding: 6px 18px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(181, 139, 60, 0.52);
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #282e39 0%, #161920 100%);
+  color: var(--text-muted);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.codex-tab-btn:hover {
+  color: #fff;
+  border-color: var(--gold-400);
+}
+
+.codex-tab-btn.is-active {
+  background-image:
+    var(--tex-bronze),
+    linear-gradient(180deg, #f0d37a 0%, #a57a28 100%);
+  border-color: var(--gold-200);
+  color: #171004;
+  text-shadow: 0 1px 0 rgba(255, 248, 215, 0.5);
+}
+
+.codex-content {
+  flex: 1;
+  padding: 12px 20px;
+  overflow-y: auto;
+}
+
+/* Codex Towers Grid (Large 80x80 3D Base Portrait + T2 3D Inset + 56x56 3D Branch Portraits!) */
+.codex-towers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.codex-tower-card {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(29, 34, 43, 0.94) 0%, rgba(15, 18, 24, 0.98) 100%);
+  border: 1.5px solid rgba(197, 155, 69, 0.52);
+  box-shadow: inset 0 1px 0 rgba(255, 242, 198, 0.16), 0 6px 16px rgba(0, 0, 0, 0.72);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.codex-tower-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.codex-portrait-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  background: radial-gradient(circle, #27303d 0%, #0d1016 100%);
+  border: 2px solid var(--gold-500);
+  box-shadow:
+    0 0 0 1.5px #120d05,
+    inset 0 1px 0 rgba(255, 244, 200, 0.34),
+    0 4px 12px rgba(0, 0, 0, 0.82);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.codex-portrait-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.codex-t2-mini {
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(197, 155, 69, 0.65);
+  background: #0d1016;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75);
+}
+
+.codex-t2-mini canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.codex-branches-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.codex-branch-box {
+  padding: 7px 9px;
+  border-radius: 5px;
+  background: rgba(11, 14, 19, 0.88);
+  border: 1px solid rgba(207, 166, 78, 0.36);
+  font-size: 10.4px;
+  line-height: 1.28;
+}
+
+.codex-branch-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-300);
+  font-size: 11px;
+}
+
+.codex-branch-head canvas {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 1.5px solid rgba(207, 166, 78, 0.58);
+  background: #0d1016;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.8);
+}
+
+/* Codex Bestiary 3x3 Grid — Large 80x80 3D Studio Portraits on All 9 Enemies & Bosses! */
+.codex-bestiary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 11px;
+}
+
+.codex-enemy-card {
+  padding: 9px 11px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 33, 42, 0.94) 0%, rgba(14, 17, 23, 0.98) 100%);
+  border: 1.5px solid rgba(181, 139, 60, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 242, 198, 0.14), 0 5px 14px rgba(0, 0, 0, 0.72);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.codex-enemy-card.is-boss-card {
+  border-color: #e46936;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(50, 21, 18, 0.95) 0%, rgba(20, 12, 14, 0.98) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 200, 140, 0.22), 0 6px 16px rgba(0, 0, 0, 0.8), 0 0 16px rgba(230, 81, 0, 0.2);
+}
+
+.codex-enemy-card .codex-portrait-box {
+  width: 86px;
+  height: 86px;
+}
+
+.codex-enemy-card.is-boss-card .codex-portrait-box {
+  border-color: #ffab40;
+}
+
+.codex-enemy-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.codex-enemy-meta {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.resist-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  font-size: 9.8px;
+}
+
+.resist-pill {
+  padding: 2.5px 6px;
+  border-radius: 3px;
+  background: rgba(9, 11, 15, 0.9);
+  border: 1px solid rgba(181, 139, 60, 0.24);
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.codex-mech-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.codex-mech-card {
+  padding: 14px 16px;
+  border-radius: 6px;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, rgba(28, 33, 42, 0.94) 0%, rgba(14, 17, 23, 0.98) 100%);
+  border: 1.5px solid rgba(197, 155, 69, 0.48);
+}
+
+.codex-mech-card h4 {
+  margin: 0 0 7px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--gold-300);
+}
+
+.codex-mech-card p,
+.codex-mech-card li {
+  font-size: 12px;
+  line-height: 1.46;
+  color: var(--text-muted);
+}
+
+.codex-mech-card ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.codex-footer {
+  padding: 9px 20px;
+  border-top: 1px solid rgba(207, 166, 78, 0.36);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(10, 12, 16, 0.92);
+}
+
+/* Victory & Defeat OutcomePlaques */
+.outcome-card {
+  position: relative;
+  width: min(550px, 92vw);
+  padding: 28px 32px;
+  border-radius: 8px;
+  text-align: center;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #282f3a 0%, #13171e 100%);
+  background-size: 96px 96px, 100% 100%;
+  border: 2.5px solid var(--gold-400);
+  box-shadow:
+    0 0 0 3px #140e06,
+    0 0 0 5px rgba(168, 130, 54, 0.65),
+    0 26px 72px rgba(0, 0, 0, 0.96),
+    0 0 36px rgba(207, 166, 78, 0.36);
+}
+
+.outcome-card.is-defeat {
+  border-color: #e65100;
+  background-image:
+    var(--tex-stone),
+    linear-gradient(180deg, #321917 0%, #140c0c 100%);
+  box-shadow:
+    0 0 0 3px #180806,
+    0 26px 72px rgba(0, 0, 0, 0.96),
+    0 0 36px rgba(255, 61, 0, 0.38);
+}
+
+.outcome-title {
+  margin: 0 0 5px;
+  font-family: var(--font-serif);
+  font-size: 29px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  color: var(--gold-300);
+  text-transform: uppercase;
+  text-shadow: 0 3px 8px #000;
+}
+
+.outcome-card.is-defeat .outcome-title {
+  color: #ff9472;
+}
+
+.outcome-sub {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.stars-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 10px 0 18px;
+}
+
+.victory-star {
+  width: 50px;
+  height: 50px;
+  opacity: 0.22;
+  transform: scale(0.82);
+  transition: transform 0.4s cubic-bezier(0.22, 1.4, 0.36, 1), opacity 0.35s ease, filter 0.35s ease;
+}
+
+.victory-star.is-earned {
+  opacity: 1;
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 14px rgba(245, 214, 122, 0.85));
+}
+
+.outcome-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.outcome-stat-box {
+  padding: 10px 10px;
+  border-radius: 5px;
+  background: rgba(9, 11, 15, 0.84);
+  border: 1px solid rgba(207, 166, 78, 0.38);
+}
+
+.outcome-stat-label {
+  font-family: var(--font-serif);
+  font-size: 9.8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.outcome-stat-val {
+  margin-top: 3px;
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #f6eedc;
+}
+
+.outcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* ============================================================================
+   RESPONSIVE COMPACT SCALING (1280x720 / 1366x768 LAPTOPS)
+   ============================================================================ */
+
+@media (max-width: 1420px) {
+  #minimap-medallion,
+  #codex-medallion {
+    width: 142px;
+    height: 142px;
+  }
+
+  .minimap-inner-well,
+  #btn-codex.tome-medallion-btn {
+    width: 126px;
+    height: 126px;
+  }
+
+  #hud-tome-canvas {
+    width: 118px;
+    height: 118px;
+  }
+
+  #command-dock {
+    max-width: calc(100vw - 314px);
+  }
+
+  .dock-frame {
+    gap: 7px;
+    padding: 7px 10px 6px;
+  }
+
+  .build-card,
+  .build-icon-wrap,
+  .build-pad-status,
+  .pad-socket-well {
+    width: 72px;
+  }
+
+  .build-icon-wrap,
+  .pad-socket-well,
+  .branch-art-wrap {
+    height: 70px;
+  }
+
+  .tower-id-col {
+    width: 186px;
+  }
+
+  .inspector-portrait-wrap {
+    width: 68px;
+    height: 68px;
+  }
+
+  .tower-stats-col {
+    width: 178px;
+  }
+
+  .upgrade-card {
+    width: 188px;
+  }
+
+  .upg-t2-canvas-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .upgrade-card.branch-card,
+  .branch-art-wrap {
+    width: 92px;
+  }
+
+  .skill-card {
+    width: 188px;
+  }
+
+  .spell-btn,
+  #btn-ring.ring-ability-btn {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* ============================================================================
+   KEYFRAME ANIMATIONS
+   ============================================================================ */
+
+@keyframes pulseCrimson {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(255, 61, 0, 0.38);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 23, 68, 0.92);
+  }
+}
+
+@keyframes pulseCrimsonText {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(255, 61, 0, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.92));
+  }
+}
+
+@keyframes earlyHornPulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.82), 0 0 8px rgba(240, 210, 122, 0.38);
+  }
+  50% {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 198, 40, 0.88);
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "td",
+  "version": "2.0.0",
+  "description": "Shadows of the West — 3D Three.js Middle-earth Tower Defense",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "three": "^0.187.0"
+  }
+}
